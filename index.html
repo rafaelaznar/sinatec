@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/underscore@1.13.1/underscore-umd-min.js"></script>
+    <title>sinatec</title>
+    <style>
+        td {
+            text-align: center
+        }
+    </style>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            function isInt(value) {
+                return !isNaN(value) && parseInt(Number(value)) == value && !isNaN(parseInt(value, 10));
+            }
+            function isControlOK(control) {
+                if (!isInt(control.val()) || control.val() < 1 || control.val() > 20) {
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+            function validateControl(control) {
+                control.addClass('is-valid');
+                control.removeClass('is-invalid');
+            }
+            function invalidateControl(control) {
+                control.addClass('is-invalid');
+                control.removeClass('is-valid');
+            }
+            $("#txtAnchura").keyup(function () {
+                if (isControlOK($("#txtAnchura"))) {
+                    validateControl($("#txtAnchura"));
+                    if (isControlOK($("#txtAltura"))) { $("#btnGenerar").prop('disabled', false); }
+                } else {
+                    invalidateControl($("#txtAnchura"));
+                    $("#btnGenerar").prop('disabled', true);
+                }
+            });
+            $("#txtAltura").keyup(function () {
+                if (isControlOK($("#txtAltura"))) {
+                    validateControl($("#txtAltura"));
+                    if (isControlOK($("#txtAnchura"))) { $("#btnGenerar").prop('disabled', false); }
+                } else {
+                    invalidateControl($("#txtAltura"));
+                    $("#btnGenerar").prop('disabled', true);
+                }
+            });
+            $("#btnGenerar").click(function () {
+                $("#tabla").html(_.range(1, $("#txtAltura").val() - -1).map(y => _.range(1, $("#txtAnchura").val() - -1).map(x => "<td>" + x * y + "</td>")).map(z => z.reduce(function (memo, num) { return memo + num; }, " ")).reduce(function (memo, num) { return memo + "<tr>" + num + "</tr>"; }, " "));
+                $("#btnBorrar").prop('disabled', false);
+            });
+            $("#btnBorrar").click(function () {
+                $("#tabla").empty();
+                $("#btnBorrar").prop('disabled', true);
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div class="container mt-5">
+        <header class="row pb-3 mb-4 border-bottom justify-content-between">
+            <h3>Práctica DAW</h3>
+            <h3>Rafael Aznar - CIPFP Ausiàs March</h3>
+        </header>
+        <div class="p-5 mb-4 bg-light rounded-3">
+            <div class="text-center">
+                <h1 class="display-4 fw-bold mb-4">sinatec</h1>
+                <h6 class="text-muted text-monospace">Cuadrante de multiplicaciones dinámico</h6>
+                <h6 class="text-muted text-monospace">Procesamiento en entorno cliente con Javascript y jQuery</h6>
+                <h6 class="text-muted text-monospace">Con formulario generador de tabla y validaciones</h6>
+                <h6 class="text-muted text-monospace">Generación funcional de tabla.</h6>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-12 text-center">
+                <div class="col-4 mx-auto">
+                    <form name="dimensionesForm" class="mt-4">
+                        <div class="form-group form-row">
+                            <label for="txtAnchura">Anchura</label>
+                            <input type="text" class="form-control" id="txtAnchura" required />
+                            <div class="valid-feedback">OK!</div>
+                            <div class="invalid-feedback">Introduzca un número entero entre 1 y 20</div>
+                        </div>
+                        <div class="form-group form-row">
+                            <label for="txtAltura">Altura</label>
+                            <input type="text" class="form-control" id="txtAltura" required />
+                            <div class="valid-feedback">OK!</div>
+                            <div class="invalid-feedback">Introduzca un número entero entre 1 y 20</div>
+                        </div>
+                    </form>
+                </div>
+
+                <button class="btn btn-success mt-4" id="btnGenerar">Generar Tabla</button>
+                <button class="btn btn-danger mt-4" id="btnBorrar">Borrar Tabla</button>
+                <table class="table table-bordered table-success table-striped mx-auto mt-5" style="width: 500px;"
+                    id="tabla"></table>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
